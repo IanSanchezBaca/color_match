@@ -3,20 +3,22 @@
 
 using namespace std;
 
-void change_color(char input);
+void change_color(int, int);
+void print_grid();
+
 vector<vector<char>> grid; // eh im too lazy not figure out how to make not be a global variable
 
-
+char current;
+char input;
+bool dead = false;
 
 int main()
 {
-    char input;
-    char current;
+    int chances = 25;
     // setup
     random_device rand;
     uniform_int_distribution<int> dist(0, 5);
 
-   
     grid.resize(10);
 
     // cout << grid.size() << endl;
@@ -63,37 +65,74 @@ int main()
         }
     }
 
+    print_grid();
+
+    while (!dead)
+    {
+        // input
+        cout << "\nEnter a color.\n";
+        cout << "w r b y g p\n";
+        cout << "chances left: " << chances << endl;
+
+        cin >> input;
+        chances--;
+
+        if((input != 'w') && (input != 'r') && (input != 'b') && (input != 'y') && (input != 'g') && (input != 'p')){
+            cout << "not an option!\n";
+            exit(1);
+        }
+
+        // logic
+        if(chances == 0){
+            dead = true;
+        }
+        current = grid[0][0];
+        change_color(0, 0);
+
+
+        // print
+        system("clear");
+        print_grid();
+    }
+    return 0;
+} // main
+
+void change_color(int x, int y)
+{
+    grid[x][y] = input;
+    if(x != 9){ // check right
+        if(grid[x+1][y] == current){
+            change_color(x+1, y);
+        }
+    }
+    if(y != 9){// check down
+        if(grid[x][y+1] == current){
+            change_color(x, y+1);
+        }
+    }
+    if(x != 0){// check left
+        if(grid[x-1][y] == current){
+            change_color(x-1, y);
+        }
+    }
+    if(y != 0){// check up
+        if(grid[x][y-1] == current){
+            change_color(x, y-1);
+        }
+    }
+}// change_color
+
+void print_grid()
+{
     for (int y = 0; y < 10; y++)
     {
         for (int x = 0; x < 10; x++)
         {
-            cout << grid[x][y];
+            cout << grid[x][y] << " ";
         }
         cout << endl;
     }
-
-    // input
-    // char input;
-    current = grid[0][0]; 
-    cout << "\nEnter a color.\n";
-    cout << "w r b y g p\n";
-
-    cin >> input;
-
-
-    // logic
-    // cout << "logic\n";
-    change_color(input);
-
-    // execute
-    // cout << "execute\n";
-
-    return 0;
-}
-
-void change_color(char input){
-cout << grid[0][0];
-}
+} // print_grid
 
 // there are six different colors
 
